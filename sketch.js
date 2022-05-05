@@ -32,6 +32,15 @@ Array.prototype.random = function () {
   return this[Math.floor((Math.random()*this.length))];
 }
 
+let hasStarted;
+
+let robotoFont, robotoBoldFont;
+
+function preload() {
+  robotoFont = loadFont('roboto.ttf');
+  robotoBoldFont = loadFont('roboto-bold.ttf');
+}
+
 function setup() {
   // Colors
   COLOR_WATER = color(0, 0, 255);
@@ -56,6 +65,8 @@ function setup() {
   
   COLOR_ROCK_START = color(162, 165, 167);
   COLOR_ROCK_STOP = color(204, 206, 207);
+
+  hasStarted = false;
   
   createCanvas(windowWidth, windowHeight);
   
@@ -215,7 +226,50 @@ function drawScenery(){
   }
 }
 
+function drawStatement(){
+  background(0);
+
+  textAlign(LEFT, TOP);
+
+  const scale = Math.round(width / 100);
+
+  fill(255, 0, 0);
+  textFont(robotoBoldFont);
+  textSize(scale * 5);
+  const title = "Perlin Valley (2022) by Vince Liberio";
+  text(title, scale, scale);
+
+  fill(255, 255, 255);
+  textSize(scale * 2);
+  const summary = [
+    "Perlin Valley is a website that generates a random landscape from Perlin noise as the name suggests. Each",
+    "scene is created by mapping each pixel to a type of terrain based on noise value thresholds. Just like Perlin",
+    "noise's creator intended, the pseudo-organic random nature of the noise leads to a believably natural result",
+    "yet still procedurally created by an unseen algorithm. Much like how the beautiful landscapes that dot our",
+    "planet are also the result of millions of years of vast and deterministic forces that create asymmetrical",
+    "beauty from mathematically predictable changes. This piece is a simple sandbox I made to experiment with",
+    "procedurally-generated terrain/images inspired by Ken Perlin, Ian Cheng, and even games like Minecraft",
+    "successfully utilize these same mechanics to build whole immersive worlds out of pseudo-randomness."
+  ]
+  text(summary.join("\n"), scale, scale * 10);
+
+
+  const prompt = "Click on the screen to start generating a scene.";
+  fill(255, 255, 0);
+  textAlign(CENTER, CENTER);
+  text(prompt, width/2, height - scale * 8);
+
+  console.log(title);
+  console.log(summary.join(" "));
+}
+
 function draw() {
+  if (!hasStarted){
+    hasStarted = true;
+    drawStatement();
+    noLoop();
+    return;
+  }
   seed = int(random(1000, 100000));
   console.log("Rendering with seed:", seed);
   noiseSeed(seed);
